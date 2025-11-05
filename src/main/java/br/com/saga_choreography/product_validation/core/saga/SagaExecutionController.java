@@ -29,8 +29,7 @@ public class SagaExecutionController {
     @Value("${spring.kafka.topic.notify-ending}")
     private String notifyEndingTopic;
 
-
-    public void handlerSaga(Event event) {
+    public void handleSaga(Event event) {
         switch (event.getStatus()) {
             case SUCCESS -> handleSuccess(event);
             case ROLLBACK_PENDING -> handleRollbackPending(event);

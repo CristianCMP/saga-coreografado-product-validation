@@ -39,11 +39,11 @@ public class KafkaConfig {
     @Value("${spring.kafka.topic.product-validation-fail}")
     private String productValidationFailTopic;
 
-    @Value("${spring.kafka.topic.payment-success}")
-    private String paymentSuccessTopic;
-
     @Value("${spring.kafka.topic.notify-ending}")
     private String notifyEndingTopic;
+
+    @Value("${spring.kafka.topic.payment-success}")
+    private String paymentSuccessTopic;
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
@@ -52,13 +52,11 @@ public class KafkaConfig {
 
     private Map<String, Object> consumerProps() {
         var props = new HashMap<String, Object>();
-
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
-
         return props;
     }
 
@@ -69,11 +67,9 @@ public class KafkaConfig {
 
     private Map<String, Object> producerProps() {
         var props = new HashMap<String, Object>();
-
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-
         return props;
     }
 
@@ -101,12 +97,12 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic paymentSuccessTopic() {
-        return buildTopic(paymentSuccessTopic);
+    public NewTopic notifyEndingTopic() {
+        return buildTopic(notifyEndingTopic);
     }
 
     @Bean
-    public NewTopic notifyEndingTopic() {
-        return buildTopic(notifyEndingTopic);
+    public NewTopic paymentSuccessTopic() {
+        return buildTopic(paymentSuccessTopic);
     }
 }
