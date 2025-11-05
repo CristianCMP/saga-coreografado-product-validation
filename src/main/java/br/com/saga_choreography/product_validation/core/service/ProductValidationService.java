@@ -8,6 +8,7 @@ import br.com.saga_choreography.product_validation.core.model.Validation;
 import br.com.saga_choreography.product_validation.core.producer.KafkaProducer;
 import br.com.saga_choreography.product_validation.core.repository.ProductRepository;
 import br.com.saga_choreography.product_validation.core.repository.ValidationRepository;
+import br.com.saga_choreography.product_validation.core.saga.SagaExecutionController;
 import br.com.saga_choreography.product_validation.core.utils.JsonUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +26,9 @@ public class ProductValidationService {
 
     private static final String CURRENT_SOURCE = "PRODUCT_VALIDATION_SERVICE";
 
-    private final JsonUtil jsonUtil;
-    private final KafkaProducer producer;
     private final ProductRepository productRepository;
     private final ValidationRepository validationRepository;
+    private final SagaExecutionController sagaExecutionController;
 
     public void validateExistingProducts(Event event) {
         try {
@@ -40,7 +40,7 @@ public class ProductValidationService {
             handleFailCurrentNotExecuted(event, ex.getMessage());
         }
 
-        producer.sendEvent(jsonUtil.toJson(event), "");
+        sagaExecutionController.handlerSaga(event);
     }
 
     private void validateProductsInformed(Event event) {
@@ -119,7 +119,8 @@ public class ProductValidationService {
         event.setStatus(FAIL);
         event.setSource(CURRENT_SOURCE);
         addHistory(event, "Rollback executed on product validation!");
-        producer.sendEvent(jsonUtil.toJson(event), "");
+
+        sagaExecutionController.handlerSaga(event);
     }
 
     private void changeValidationFail(Event event) {
